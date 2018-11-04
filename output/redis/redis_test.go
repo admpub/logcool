@@ -6,8 +6,8 @@ import (
 	"testing"
 	// "time"
 
-	"github.com/wgliang/logcool/utils"
-	// "github.com/wgliang/logcool/utils/logevent"
+	"github.com/admpub/logcool/utils"
+	// "github.com/admpub/logcool/utils/logevent"
 )
 
 func init() {

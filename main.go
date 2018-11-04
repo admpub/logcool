@@ -7,21 +7,22 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/wgliang/logcool/cmd"
-	_ "github.com/wgliang/logcool/filter/grok"
-	_ "github.com/wgliang/logcool/filter/metrics"
-	_ "github.com/wgliang/logcool/filter/split"
-	_ "github.com/wgliang/logcool/filter/zeus"
-	_ "github.com/wgliang/logcool/input/collectd"
-	_ "github.com/wgliang/logcool/input/file"
-	_ "github.com/wgliang/logcool/input/http"
-	_ "github.com/wgliang/logcool/input/stdin"
-	_ "github.com/wgliang/logcool/output/email"
-	_ "github.com/wgliang/logcool/output/lexec"
-	_ "github.com/wgliang/logcool/output/redis"
-	_ "github.com/wgliang/logcool/output/stdout"
-	"github.com/wgliang/logcool/utils"
+	"github.com/admpub/logcool/cmd"
+	_ "github.com/admpub/logcool/filter/grok"
+	_ "github.com/admpub/logcool/filter/metrics"
+	_ "github.com/admpub/logcool/filter/split"
+	_ "github.com/admpub/logcool/filter/zeus"
+	_ "github.com/admpub/logcool/input/collectd"
+	_ "github.com/admpub/logcool/input/file"
+	_ "github.com/admpub/logcool/input/http"
+	_ "github.com/admpub/logcool/input/stdin"
+	_ "github.com/admpub/logcool/output/email"
+	_ "github.com/admpub/logcool/output/lexec"
+	_ "github.com/admpub/logcool/output/redis"
+	_ "github.com/admpub/logcool/output/stdout"
+	"github.com/admpub/logcool/utils"
 )
+
 // config
 var (
 	conf    = flag.String("config", "", "path to config.json file")

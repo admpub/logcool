@@ -6,7 +6,7 @@ import (
 	"errors"
 	"os/exec"
 
-	"github.com/wgliang/logcool/utils"
+	"github.com/admpub/logcool/utils"
 )
 
 const (

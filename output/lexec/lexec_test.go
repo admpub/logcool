@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/wgliang/logcool/utils"
+	"github.com/admpub/logcool/utils"
 )
 
 func init() {
@@ -44,7 +44,7 @@ func Test_Event(t *testing.T) {
 	outchan <- utils.LogEvent{
 		Timestamp: time.Now(),
 		Message:   "ps",
-		Extra:    args,
+		Extra:     args,
 	}
 
 	time.Sleep(time.Duration(5) * time.Second)

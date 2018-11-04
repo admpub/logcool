@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/wgliang/logcool/utils"
+	"github.com/admpub/logcool/utils"
 )
 
 func init() {

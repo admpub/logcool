@@ -3,8 +3,9 @@
 package grok
 
 import (
-	"github.com/wgliang/logcool/utils"
 	"regexp"
+
+	"github.com/admpub/logcool/utils"
 )
 
 const (

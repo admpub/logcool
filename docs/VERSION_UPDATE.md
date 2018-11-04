@@ -5,19 +5,19 @@
 ###Plugins
 
 ### input
-- [file](https://github.com/wgliang/logcool/tree/master/input/file) Source data from files.
-- [stdin](https://github.com/wgliang/logcool/tree/master/input/stdin) Source data from console.
-- [http](https://github.com/wgliang/logcool/tree/master/input/stdin) Source data from http.
-- [collectd](https://github.com/wgliang/logcool/tree/master/input/collectd) Monitor and collect system performance data.
+- [file](https://github.com/admpub/logcool/tree/master/input/file) Source data from files.
+- [stdin](https://github.com/admpub/logcool/tree/master/input/stdin) Source data from console.
+- [http](https://github.com/admpub/logcool/tree/master/input/stdin) Source data from http.
+- [collectd](https://github.com/admpub/logcool/tree/master/input/collectd) Monitor and collect system performance data.
 
 ### filter
-- [zeus](https://github.com/wgliang/logcool/tree/master/filter/zeus)
-- [metrics](https://github.com/wgliang/logcool/tree/master/filter/metrics)
-- [grok](https://github.com/wgliang/logcool/tree/master/filter/grok)
+- [zeus](https://github.com/admpub/logcool/tree/master/filter/zeus)
+- [metrics](https://github.com/admpub/logcool/tree/master/filter/metrics)
+- [grok](https://github.com/admpub/logcool/tree/master/filter/grok)
 
 - output
-[stdout](https://github.com/wgliang/logcool/tree/master/output/stdout)
-[redis](https://github.com/wgliang/logcool/tree/master/output/redis)
+[stdout](https://github.com/admpub/logcool/tree/master/output/stdout)
+[redis](https://github.com/admpub/logcool/tree/master/output/redis)
 
 ###Issues
 

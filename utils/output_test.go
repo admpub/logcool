@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/wgliang/logcool/output/stdout"
+	"github.com/admpub/logcool/output/stdout"
 )
 
 func Test_RegistOutputHandler(t *testing.T) {

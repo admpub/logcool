@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/wgliang/logcool/filter/zeus"
+	"github.com/admpub/logcool/filter/zeus"
 )
 
 func Test_RegistFilterHandler(t *testing.T) {

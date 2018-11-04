@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/wgliang/logcool/input/stdin"
+	"github.com/admpub/logcool/input/stdin"
 )
 
 func Test_RegistInputHandler(t *testing.T) {

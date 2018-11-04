@@ -16,7 +16,7 @@ import (
 	"github.com/shirou/gopsutil/net"
 	"github.com/shirou/gopsutil/process"
 
-	"github.com/wgliang/logcool/utils"
+	"github.com/admpub/logcool/utils"
 )
 
 const (
@@ -80,7 +80,7 @@ type ProcessInfo struct {
 	NumCtxSwitches *process.NumCtxSwitchesStat `json:"numCtxSwitches"`
 	NumFDs         int32                       `json:"numFDs"`
 	NumThreads     int32                       `json:"numThreads"`
-	Threads        map[string]string           `json:"threads"`
+	Threads        map[int32]*cpu.TimesStat    `json:"threads"`
 	Times          *cpu.TimesStat              `json:"times"`
 	CPUAffinity    []int32                     `json:"cpuAffinity"`
 	MemoryInfo     *process.MemoryInfoStat     `json:"memoryInfo"`

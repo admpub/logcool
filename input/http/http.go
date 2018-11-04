@@ -10,7 +10,7 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/golang/glog"
 
-	"github.com/wgliang/logcool/utils"
+	"github.com/admpub/logcool/utils"
 )
 
 const (

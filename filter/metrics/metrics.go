@@ -6,14 +6,14 @@ import (
 	"encoding/json"
 	"regexp"
 
-	"github.com/wgliang/logcool/utils"
+	"github.com/admpub/logcool/utils"
 )
 
 const (
 	ModuleName = "metrics"
 )
 
-// Define zeus' config.
+// FilterConfig Define metrics' config.
 type FilterConfig struct {
 	utils.FilterConfig
 	Tag   []string `json:"tag"`
@@ -26,7 +26,7 @@ func init() {
 	utils.RegistFilterHandler(ModuleName, InitHandler)
 }
 
-// Init grok Handler.
+// Init metrics Handler.
 func InitHandler(confraw *utils.ConfigRaw) (tfc utils.TypeFilterConfig, err error) {
 	conf := FilterConfig{
 		FilterConfig: utils.FilterConfig{

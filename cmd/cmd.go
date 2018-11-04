@@ -9,8 +9,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/wgliang/logcool/utils"
-	_ "github.com/wgliang/logcool/utils/logo"
+	"github.com/admpub/logcool/utils"
+	_ "github.com/admpub/logcool/utils/logo"
 )
 
 const (

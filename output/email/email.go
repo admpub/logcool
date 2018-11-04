@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/wgliang/logcool/utils"
+	"github.com/admpub/logcool/utils"
 	"gopkg.in/gomail.v2"
 )
 

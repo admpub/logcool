@@ -13,6 +13,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
@@ -27,6 +28,7 @@ const (
 
 var (
 	mapWatcher = map[string]*fsnotify.Watcher{}
+	mutex      = sync.RWMutex{}
 )
 
 type SinceDBInfo struct {
@@ -413,13 +415,14 @@ func waitWatchEvent(fpath string, op fsnotify.Op) (event fsnotify.Event, err err
 	}
 
 	fdir = filepath.Dir(fpath)
-
 	if watcher, ok = mapWatcher[fdir]; !ok {
 		if watcher, err = fsnotify.NewWatcher(); err != nil {
 			err = errors.New("create new watcher failed: " + fdir)
 			return
 		}
+		mutex.Lock()
 		mapWatcher[fdir] = watcher
+		mutex.Unlock()
 		if err = watcher.Add(fdir); err != nil {
 			err = errors.New("add new watch path failed: " + fdir)
 			return

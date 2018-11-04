@@ -42,7 +42,7 @@ func main() {
 	}
 
 	if *help != false {
-		cmd.Help()
+		flag.Usage()
 		os.Exit(0)
 	}
 	var confs []utils.Config

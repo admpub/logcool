@@ -6,13 +6,13 @@ import (
 	"github.com/codegangsta/inject"
 )
 
-// Filter base type interface.
+// TypeFilterConfig Filter base type interface.
 type TypeFilterConfig interface {
 	TypeConfig
 	Event(LogEvent) LogEvent
 }
 
-// Filter base type struct.
+// FilterConfig Filter base type struct.
 type FilterConfig struct {
 	CommonConfig
 }
@@ -24,12 +24,12 @@ var (
 	mapFilterHandler = map[string]FilterHandler{}
 )
 
-// Registe FilterHandler.
+// RegistFilterHandler Registe FilterHandler.
 func RegistFilterHandler(name string, handler FilterHandler) {
 	mapFilterHandler[name] = handler
 }
 
-// Run Filters
+// RunFilters Run Filters
 func (c *Config) RunFilters() (err error) {
 	_, err = c.Injector.Invoke(c.runFilters)
 	return

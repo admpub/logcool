@@ -33,23 +33,23 @@ const Defaultconfig = `
 }
 `
 
-// Config struct for the logcool.
+// TypeConfig Config struct for the logcool.
 type TypeConfig interface {
 	SetInjector(inj inject.Injector)
 	GetType() string
 	Invoke(f interface{}) (refvs []reflect.Value, err error)
 }
 
-// Common config for logcool.
+// CommonConfig Common config for logcool.
 type CommonConfig struct {
 	inject.Injector `json:"-"`
 	Type            string `json:"type"`
 }
 
-// config raw type.
+// ConfigRaw config raw type.
 type ConfigRaw map[string]interface{}
 
-// config struct for config-raw.
+// Config config struct for config-raw.
 type Config struct {
 	inject.Injector `json:"-"`
 	InputRaw        []ConfigRaw `json:"input"`
@@ -57,16 +57,29 @@ type Config struct {
 	OutputRaw       []ConfigRaw `json:"output"`
 }
 
+func (c *Config) Init() {
+	c.Injector = inject.New()
+	c.Map(Logger)
+
+	inchan := make(InChan, 100)
+	outchan := make(OutChan, 100)
+	c.Map(inchan)
+	c.Map(outchan)
+
+	rv := reflect.ValueOf(c)
+	formatReflect(rv)
+}
+
 // In/Out chan.
 type InChan chan LogEvent
 type OutChan chan LogEvent
 
-// Set injector value.
+// SetInjector Set injector value.
 func (c *CommonConfig) SetInjector(inj inject.Injector) {
 	c.Injector = inj
 }
 
-// Get config type.
+// GetType Get config type.
 func (c *CommonConfig) GetType() string {
 	return c.Type
 }
@@ -94,7 +107,7 @@ func (c *CommonConfig) Invoke(f interface{}) (refvs []reflect.Value, err error) 
 	return
 }
 
-// Load config from file.
+// LoadFromFile Load config from file.
 func LoadFromFile(path string) (config Config, err error) {
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -104,17 +117,17 @@ func LoadFromFile(path string) (config Config, err error) {
 	return LoadFromData(data)
 }
 
-// Laod config from string.
+// LoadFromString Load config from string.
 func LoadFromString(text string) (config Config, err error) {
 	return LoadFromData([]byte(text))
 }
 
-// Laod default-config from string.
+// LoadDefaultConfig Load default-config from string.
 func LoadDefaultConfig() (config Config, err error) {
 	return LoadFromString(Defaultconfig)
 }
 
-// Load config from data([]byte).
+// LoadFromData Load config from data([]byte).
 func LoadFromData(data []byte) (config Config, err error) {
 	if data, err = CleanComments(data); err != nil {
 		return
@@ -124,22 +137,11 @@ func LoadFromData(data []byte) (config Config, err error) {
 		glog.Errorln(err)
 		return
 	}
-
-	config.Injector = inject.New()
-	config.Map(Logger)
-
-	inchan := make(InChan, 100)
-	outchan := make(OutChan, 100)
-	config.Map(inchan)
-	config.Map(outchan)
-
-	rv := reflect.ValueOf(&config)
-	formatReflect(rv)
-
+	config.Init()
 	return
 }
 
-// Reflect config.
+// ReflectConfig Reflect config.
 func ReflectConfig(confraw *ConfigRaw, conf interface{}) (err error) {
 	data, err := json.Marshal(confraw)
 	if err != nil {
@@ -205,7 +207,7 @@ func CleanComments(data []byte) (out []byte, err error) {
 	return
 }
 
-// Simple-invoke.
+// InvokeSimple Simple-invoke.
 func (c *Config) InvokeSimple(arg interface{}) (err error) {
 	refvs, err := c.Injector.Invoke(arg)
 	if err != nil {

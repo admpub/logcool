@@ -33,13 +33,13 @@ func (le *LogEvent) AddTag(tags ...string) {
 	}
 }
 
-// Marshal LogEvent to Json
+// MarshalJSON Marshal LogEvent to Json
 func (le LogEvent) MarshalJSON() (data []byte, err error) {
 	event := le.getJSONMap()
 	return json.Marshal(event)
 }
 
-// Marshal LogEvent to Indent
+// MarshalIndent Marshal LogEvent to Indent
 func (le LogEvent) MarshalIndent() (data []byte, err error) {
 	event := le.getJSONMap()
 	return json.MarshalIndent(event, "", "\t")
@@ -58,7 +58,7 @@ func (le LogEvent) Get(field string) (v interface{}) {
 	return
 }
 
-// Get Value-String form LogEvent'Key
+// GetString Get Value-String form LogEvent'Key
 func (le LogEvent) GetString(field string) (v string) {
 	switch field {
 	case "@timestamp":
@@ -106,7 +106,7 @@ func FormatWithEnv(text string) (result string) {
 	for _, submatches := range matches {
 		field := submatches[1]
 		value := os.Getenv(field)
-		if value != "" {
+		if len(value) > 0 {
 			result = strings.Replace(result, submatches[0], value, -1)
 		}
 	}
@@ -137,7 +137,7 @@ func (le LogEvent) Format(format string) (out string) {
 	for _, submatches := range matches {
 		field := submatches[1]
 		value := le.GetString(field)
-		if value != "" {
+		if len(value) > 0 {
 			out = strings.Replace(out, submatches[0], value, -1)
 		}
 	}

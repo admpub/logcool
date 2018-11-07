@@ -25,7 +25,7 @@ func Test_Start(t *testing.T) {
 	conf, err := utils.LoadFromString(`{
 		"input": [{
 			"type": "file",
-			"dirspath": "../../tmp/log/log.log",
+			"dirspath": ["../../tmp/log"],
 			"filetype": ".log",
 			"sincepath": "",
 			"startpos": "beginning"

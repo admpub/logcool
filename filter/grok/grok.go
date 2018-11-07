@@ -48,11 +48,12 @@ func (fc *FilterConfig) Event(event utils.LogEvent) utils.LogEvent {
 	}
 	re := regexp.MustCompile(fc.Match)
 	value := re.FindString(event.Message)
-	if fc.Model == "over" && value != "" {
-		event.Message = value
-	} else if value != "" {
-		event.Extra["data"] = event.Format(value)
+	if len(value) > 0 {
+		if fc.Model == "over" {
+			event.Message = value
+		} else {
+			event.Extra["data"] = event.Format(value)
+		}
 	}
-
 	return event
 }

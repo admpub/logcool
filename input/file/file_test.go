@@ -25,9 +25,10 @@ func Test_Start(t *testing.T) {
 	conf, err := utils.LoadFromString(`{
 		"input": [{
 			"type": "file",
-			"path": "../../tmp/log/log.log",
-			"sincedb_path": "",
-			"start_position": "beginning"
+			"dirspath": "../../tmp/log/log.log",
+			"filetype": ".log",
+			"sincepath": "",
+			"startpos": "beginning"
 		}]
 	}`)
 	if err != nil {

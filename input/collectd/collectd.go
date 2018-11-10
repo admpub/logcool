@@ -38,12 +38,12 @@ type CpuInfo struct {
 }
 
 type MemoryInfo struct {
-	VirtualMemory string `json:"virtualMemory"`
-	SwapMemory    string `json:"swapMemory"`
+	VirtualMemory *mem.VirtualMemoryStat `json:"virtualMemory"`
+	SwapMemory    *mem.SwapMemoryStat    `json:"swapMemory"`
 }
 
 type DiskInfo struct {
-	Usage      string                         `json:"usage"`
+	Usage      *disk.UsageStat                `json:"usage"`
 	Partition  []disk.PartitionStat           `json:"partition"`
 	IOCounters map[string]disk.IOCountersStat `json:"iOCounters"`
 }
@@ -187,13 +187,11 @@ func CpuStat() CpuInfo {
 
 func MemStat() MemoryInfo {
 	virt, _ := mem.VirtualMemory()
-	virtmem := virt.String()
 	swap, _ := mem.SwapMemory()
-	swapmem := swap.String()
 
 	memstat := MemoryInfo{
-		VirtualMemory: virtmem,
-		SwapMemory:    swapmem,
+		VirtualMemory: virt,
+		SwapMemory:    swap,
 	}
 
 	return memstat
@@ -204,10 +202,8 @@ func DiskStat() DiskInfo {
 	partitions, _ := disk.Partitions(true)
 	iOCounters, _ := disk.IOCounters()
 
-	ue := usage.String()
-
 	diskstat := DiskInfo{
-		Usage:      ue,
+		Usage:      usage,
 		Partition:  partitions,
 		IOCounters: iOCounters,
 	}

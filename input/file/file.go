@@ -6,6 +6,7 @@ package fileinput
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"io"
@@ -166,7 +167,7 @@ func (ic *InputConfig) LoopCheckSaveSinceInfos() (err error) {
 	}
 }
 
-func (ic *InputConfig) monitor(logger *log.Logger, inchan utils.InChan) (err error) {
+func (ic *InputConfig) monitor(logger *log.Logger, ctx context.Context, inchan utils.InChan) (err error) {
 	defer func() {
 		if err != nil {
 			logger.Errorln(err)

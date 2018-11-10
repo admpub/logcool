@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"reflect"
@@ -57,9 +58,10 @@ type Config struct {
 	OutputRaw       []ConfigRaw `json:"output"`
 }
 
-func (c *Config) Init() {
+func (c *Config) Init(ctx context.Context) {
 	c.Injector = inject.New()
 	c.Map(Logger)
+	c.Map(ctx)
 
 	inchan := make(InChan, 100)
 	outchan := make(OutChan, 100)
@@ -112,27 +114,27 @@ func (c *CommonConfig) Invoke(f interface{}) (refvs []reflect.Value, err error) 
 }
 
 // LoadFromFile Load config from file.
-func LoadFromFile(path string) (config Config, err error) {
+func LoadFromFile(ctx context.Context, path string) (config Config, err error) {
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		return
 	}
 
-	return LoadFromData(data)
+	return LoadFromData(ctx, data)
 }
 
 // LoadFromString Load config from string.
-func LoadFromString(text string) (config Config, err error) {
-	return LoadFromData([]byte(text))
+func LoadFromString(ctx context.Context, text string) (config Config, err error) {
+	return LoadFromData(ctx, []byte(text))
 }
 
 // LoadDefaultConfig Load default-config from string.
-func LoadDefaultConfig() (config Config, err error) {
-	return LoadFromString(Defaultconfig)
+func LoadDefaultConfig(ctx context.Context) (config Config, err error) {
+	return LoadFromString(ctx, Defaultconfig)
 }
 
 // LoadFromData Load config from data([]byte).
-func LoadFromData(data []byte) (config Config, err error) {
+func LoadFromData(ctx context.Context, data []byte) (config Config, err error) {
 	if data, err = CleanComments(data); err != nil {
 		return
 	}
@@ -141,7 +143,7 @@ func LoadFromData(data []byte) (config Config, err error) {
 		glog.Errorln(err)
 		return
 	}
-	config.Init()
+	config.Init(ctx)
 	return
 }
 

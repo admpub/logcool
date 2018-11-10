@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"os"
@@ -45,21 +46,22 @@ func main() {
 		flag.Usage()
 		os.Exit(0)
 	}
+	ctx, cancel := context.WithCancel(context.Background())
 	var confs []utils.Config
 
 	if *std != false {
 		// cmd.Logcool()
-		conf, err := utils.LoadDefaultConfig()
+		conf, err := utils.LoadDefaultConfig(ctx)
 		if err != nil {
 			fmt.Println(err)
 		}
 		confs = append(confs, conf)
 	} else if *custom != "" {
-		confs = cmd.Custom(*custom)
+		confs = cmd.Custom(ctx, *custom)
 	} else if *command != "" {
-		confs = cmd.Command(*command)
+		confs = cmd.Command(ctx, *command)
 	} else {
-		confs = cmd.LoadTemplates()
+		confs = cmd.LoadTemplates(ctx)
 	}
 
 	cmd.Run(confs)
@@ -69,6 +71,7 @@ func main() {
 	signal.Notify(chExit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
 	select {
 	case <-chExit:
+		cancel()
 		fmt.Println("logcool EXIT...Bye.")
 	}
 }

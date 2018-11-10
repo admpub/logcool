@@ -3,6 +3,7 @@
 package collectdinput
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -135,12 +136,13 @@ func (t *InputConfig) Start() {
 }
 
 // monitor all system information
-func (t *InputConfig) monitor(logger *logrus.Logger, inchan utils.InChan) (err error) {
+func (t *InputConfig) monitor(logger *logrus.Logger, ctx context.Context, inchan utils.InChan) (err error) {
 	defer func() {
 		if err != nil {
 			logger.Errorln(err)
 		}
 	}()
+
 	for {
 		info := SystemInfo("./")
 		b, err := json.Marshal(info)

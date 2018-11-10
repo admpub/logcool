@@ -3,6 +3,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -18,9 +19,9 @@ const (
 	DEFAULTFILE     = "default.json"
 )
 
-// load config from Command.
-func Command(template string) (confs []utils.Config) {
-	conf, err := utils.LoadFromString(template)
+// Command load config from Command.
+func Command(ctx context.Context, template string) (confs []utils.Config) {
+	conf, err := utils.LoadFromString(ctx, template)
 	if err != nil {
 		log.Println(err)
 		return
@@ -29,9 +30,9 @@ func Command(template string) (confs []utils.Config) {
 	return
 }
 
-// load config from user's template.
-func Custom(path string) (confs []utils.Config) {
-	conf, err := utils.LoadFromFile(path)
+// Custom load config from user's template.
+func Custom(ctx context.Context, path string) (confs []utils.Config) {
+	conf, err := utils.LoadFromFile(ctx, path)
 	if err != nil {
 		log.Println(err)
 		return
@@ -40,11 +41,11 @@ func Custom(path string) (confs []utils.Config) {
 	return
 }
 
-// load all templates in default dir.
-func LoadTemplates() (confs []utils.Config) {
+// LoadTemplates load all templates in default dir.
+func LoadTemplates(ctx context.Context) (confs []utils.Config) {
 	tempaltes, _ := fileList(DEFAULTTEMPLATE, DEFAULTFILE)
 	for _, template := range tempaltes {
-		conf, err := utils.LoadFromFile(template)
+		conf, err := utils.LoadFromFile(ctx, template)
 		if err != nil {
 			log.Println(err)
 			continue
@@ -53,7 +54,7 @@ func LoadTemplates() (confs []utils.Config) {
 		}
 	}
 	if len(confs) <= 0 {
-		conf, err := utils.LoadDefaultConfig()
+		conf, err := utils.LoadDefaultConfig(ctx)
 		if err != nil {
 			return nil
 		} else {
@@ -91,7 +92,7 @@ func Help() {
 	`)
 }
 
-// Logcool's version information.
+// Version Logcool's version information.
 func Version() {
 	version, err := ioutil.ReadFile("./VERSION.md")
 	if err != nil {

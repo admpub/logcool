@@ -8,6 +8,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/webx-top/com"
+
 	"github.com/Sirupsen/logrus"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
@@ -106,7 +108,7 @@ func init() {
 	utils.RegistInputHandler(ModuleName, InitHandler)
 }
 
-// Init fileinput Handler.
+// InitHandler Init fileinput Handler.
 func InitHandler(confraw *utils.ConfigRaw) (retconf utils.TypeInputConfig, err error) {
 	conf := InputConfig{
 		InputConfig: utils.InputConfig{
@@ -127,9 +129,9 @@ func InitHandler(confraw *utils.ConfigRaw) (retconf utils.TypeInputConfig, err e
 	return
 }
 
-// Input's start,and this is the main function of input.
-func (ic *InputConfig) Start() {
-	ic.Invoke(ic.monitor)
+// Start Input's start,and this is the main function of input.
+func (t *InputConfig) Start() {
+	t.Invoke(t.monitor)
 }
 
 // monitor all system information
@@ -140,22 +142,13 @@ func (t *InputConfig) monitor(logger *logrus.Logger, inchan utils.InChan) (err e
 		}
 	}()
 	for {
-		info := SysInfo{
-			Host:    HostStat(),
-			Cpu:     CpuStat(),
-			Mem:     MemStat(),
-			Disk:    DiskStat(),
-			Net:     NetStat(),
-			Process: ProcessStat(),
-		}
-		stsinfo, err := json.Marshal(info)
+		info := SystemInfo()
+		b, err := json.Marshal(info)
 		if err != nil {
 			fmt.Println(err)
 			break
 		}
-
-		message := string(stsinfo)
-
+		message := com.Bytes2str(b)
 		event := utils.LogEvent{
 			Timestamp: time.Now(),
 			Message:   message,
@@ -168,6 +161,17 @@ func (t *InputConfig) monitor(logger *logrus.Logger, inchan utils.InChan) (err e
 		time.Sleep(3 * time.Second)
 	}
 	return
+}
+
+func SystemInfo() SysInfo {
+	return SysInfo{
+		Host:    HostStat(),
+		Cpu:     CpuStat(),
+		Mem:     MemStat(),
+		Disk:    DiskStat(),
+		Net:     NetStat(),
+		Process: ProcessStat(),
+	}
 }
 
 func CpuStat() CpuInfo {

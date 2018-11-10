@@ -3,6 +3,7 @@
 package outputexec
 
 import (
+	"context"
 	"errors"
 	"os/exec"
 
@@ -40,14 +41,14 @@ func InitHandler(confraw *utils.ConfigRaw) (retconf utils.TypeOutputConfig, err 
 }
 
 // Input's event,and this is the main function of output.
-func (oc *OutputConfig) Event(event utils.LogEvent) (err error) {
+func (oc *OutputConfig) Event(ctx context.Context, event utils.LogEvent) (err error) {
 	command := event.Message
 	if command == "" {
 		return errors.New("message is null.")
 	}
 	args := event.Extra["args"].([]string)
 	// run the proc and get all the cmd info.
-	Cmd := exec.Command(command, args...)
+	Cmd := exec.CommandContext(ctx, command, args...)
 
 	// start the commd.
 	if err = Cmd.Start(); err != nil {

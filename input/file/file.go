@@ -158,11 +158,16 @@ func (ic *InputConfig) CheckSaveSinceDBInfos() (err error) {
 }
 
 // load check save since data
-func (ic *InputConfig) LoopCheckSaveSinceInfos() (err error) {
+func (ic *InputConfig) LoopCheckSaveSinceInfos(ctx context.Context) (err error) {
 	for {
-		time.Sleep(time.Duration(ic.Intervals) * time.Second)
-		if err = ic.CheckSaveSinceDBInfos(); err != nil {
+		select {
+		case <-ctx.Done():
 			return
+		default:
+			time.Sleep(time.Duration(ic.Intervals) * time.Second)
+			if err = ic.CheckSaveSinceDBInfos(); err != nil {
+				return
+			}
 		}
 	}
 }
@@ -195,7 +200,7 @@ func (ic *InputConfig) monitor(logger *log.Logger, ctx context.Context, inchan u
 		matches = append(matches, matche...)
 	}
 
-	go ic.LoopCheckSaveSinceInfos()
+	go ic.LoopCheckSaveSinceInfos(ctx)
 
 	for _, fpath := range matches {
 		// get all sysmlinks.
@@ -215,14 +220,15 @@ func (ic *InputConfig) monitor(logger *log.Logger, ctx context.Context, inchan u
 		}
 		// monitor file.
 		readEventChan := make(chan fsnotify.Event, 10)
-		go ic.loopRead(readEventChan, fpath, logger, inchan)
-		go ic.loopWatch(readEventChan, fpath, fsnotify.Create|fsnotify.Write)
+		go ic.loopRead(ctx, readEventChan, fpath, logger, inchan)
+		go ic.loopWatch(ctx, readEventChan, fpath, fsnotify.Create|fsnotify.Write)
 	}
 
 	return
 }
 
 func (ic *InputConfig) loopRead(
+	ctx context.Context,
 	readEventChan chan fsnotify.Event,
 	fpath string,
 	logger *log.Logger,
@@ -279,34 +285,41 @@ func (ic *InputConfig) loopRead(
 	}
 	// load all data.
 	for {
-		if line, size, err = readLine(reader, buffer); err != nil {
-			if err == io.EOF {
-				watchev := <-readEventChan
-				logger.Debug("loopRead recv:", watchev)
-				if watchev.Op&fsnotify.Create == fsnotify.Create {
-					logger.Warnf("File recreated, seeking to beginning: %q", fpath)
-					fp.Close()
-					since.Offset = 0
-					if fp, reader, err = openFile(fpath, since.Offset, os.SEEK_SET); err != nil {
+		select {
+		case <-ctx.Done():
+			close(readEventChan)
+			close(inchan)
+			return
+		default:
+			if line, size, err = readLine(reader, buffer); err != nil {
+				if err == io.EOF {
+					watchev := <-readEventChan
+					logger.Debug("loopRead recv:", watchev)
+					if watchev.Op&fsnotify.Create == fsnotify.Create {
+						logger.Warnf("File recreated, seeking to beginning: %q", fpath)
+						fp.Close()
+						since.Offset = 0
+						if fp, reader, err = openFile(fpath, since.Offset, os.SEEK_SET); err != nil {
+							return
+						}
+					}
+					if truncated, err = isTruncated(fp, since); err != nil {
 						return
 					}
-				}
-				if truncated, err = isTruncated(fp, since); err != nil {
+					if truncated {
+						logger.Warnf("File truncated, seeking to beginning: %q", fpath)
+						since.Offset = 0
+						if _, err = fp.Seek(since.Offset, os.SEEK_SET); err != nil {
+							logger.Errorf("seek file failed: %q", fpath)
+							return
+						}
+						continue
+					}
+					logger.Debugf("watch %q %q %v", watchev.Name, fpath, watchev)
+					continue
+				} else {
 					return
 				}
-				if truncated {
-					logger.Warnf("File truncated, seeking to beginning: %q", fpath)
-					since.Offset = 0
-					if _, err = fp.Seek(since.Offset, os.SEEK_SET); err != nil {
-						logger.Errorf("seek file failed: %q", fpath)
-						return
-					}
-					continue
-				}
-				logger.Debugf("watch %q %q %v", watchev.Name, fpath, watchev)
-				continue
-			} else {
-				return
 			}
 		}
 
@@ -328,15 +341,22 @@ func (ic *InputConfig) loopRead(
 	}
 }
 
-func (ic *InputConfig) loopWatch(readEventChan chan fsnotify.Event, fpath string, op fsnotify.Op) (err error) {
+func (ic *InputConfig) loopWatch(ctx context.Context, readEventChan chan fsnotify.Event, fpath string, op fsnotify.Op) (err error) {
 	var (
 		event fsnotify.Event
 	)
 	for {
-		if event, err = waitWatchEvent(fpath, op); err != nil {
+
+		select {
+		case <-ctx.Done():
+			close(readEventChan)
 			return
+		default:
+			if event, err = waitWatchEvent(ctx, fpath, op); err != nil {
+				return
+			}
+			readEventChan <- event
 		}
-		readEventChan <- event
 	}
 }
 
@@ -403,7 +423,7 @@ func readLine(reader *bufio.Reader, buffer *bytes.Buffer) (line string, size int
 	}
 }
 
-func waitWatchEvent(fpath string, op fsnotify.Op) (event fsnotify.Event, err error) {
+func waitWatchEvent(ctx context.Context, fpath string, op fsnotify.Op) (event fsnotify.Event, err error) {
 	var (
 		fdir    string
 		watcher *fsnotify.Watcher
@@ -432,6 +452,9 @@ func waitWatchEvent(fpath string, op fsnotify.Op) (event fsnotify.Event, err err
 
 	for {
 		select {
+		case <-ctx.Done():
+			err = watcher.Close()
+			return
 		case event = <-watcher.Events:
 			if event.Name == fpath {
 				if op > 0 {

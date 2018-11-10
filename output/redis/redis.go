@@ -3,6 +3,7 @@
 package outputredis
 
 import (
+	"context"
 	"errors"
 	"time"
 
@@ -57,7 +58,7 @@ func InitHandler(confraw *utils.ConfigRaw) (retconf utils.TypeOutputConfig, err 
 }
 
 // Input's event,and this is the main function of output.
-func (oc *OutputConfig) Event(event utils.LogEvent) (err error) {
+func (oc *OutputConfig) Event(ctx context.Context, event utils.LogEvent) (err error) {
 	oc.evchan <- event
 	return
 }

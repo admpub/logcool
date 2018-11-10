@@ -144,23 +144,29 @@ func (t *InputConfig) monitor(logger *logrus.Logger, ctx context.Context, inchan
 	}()
 
 	for {
-		info := SystemInfo("./")
-		b, err := json.Marshal(info)
-		if err != nil {
-			fmt.Println(err)
-			break
+		select {
+		case <-ctx.Done():
+			close(inchan)
+			return
+		default:
+			info := SystemInfo("./")
+			b, err := json.Marshal(info)
+			if err != nil {
+				fmt.Println(err)
+				break
+			}
+			message := com.Bytes2str(b)
+			event := utils.LogEvent{
+				Timestamp: time.Now(),
+				Message:   message,
+				Extra: map[string]interface{}{
+					"host": t.hostname,
+				},
+			}
+			inchan <- event
+			// take a event every 3 seconds
+			time.Sleep(3 * time.Second)
 		}
-		message := com.Bytes2str(b)
-		event := utils.LogEvent{
-			Timestamp: time.Now(),
-			Message:   message,
-			Extra: map[string]interface{}{
-				"host": t.hostname,
-			},
-		}
-		inchan <- event
-		// take a event every 3 seconds
-		time.Sleep(3 * time.Second)
 	}
 	return
 }

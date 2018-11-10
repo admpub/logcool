@@ -3,6 +3,7 @@
 package outputstdout
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/admpub/logcool/utils"
@@ -39,7 +40,7 @@ func InitHandler(confraw *utils.ConfigRaw) (retconf utils.TypeOutputConfig, err 
 }
 
 // Input's event,and this is the main function of output.
-func (oc *OutputConfig) Event(event utils.LogEvent) (err error) {
+func (oc *OutputConfig) Event(ctx context.Context, event utils.LogEvent) (err error) {
 	raw, err := event.MarshalIndent()
 	if err != nil {
 		return

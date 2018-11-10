@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"context"
 	"errors"
 
 	"github.com/Sirupsen/logrus"
@@ -10,7 +11,7 @@ import (
 // Output base type interface.
 type TypeOutputConfig interface {
 	TypeConfig
-	Event(event LogEvent) (err error)
+	Event(ctx context.Context, event LogEvent) (err error)
 }
 
 // Output base type struct.
@@ -37,7 +38,7 @@ func (c *Config) RunOutputs() (err error) {
 }
 
 // run Outputs.
-func (c *Config) runOutputs(outchan OutChan, logger *logrus.Logger) (err error) {
+func (c *Config) runOutputs(ctx context.Context, outchan OutChan, logger *logrus.Logger) (err error) {
 	outputs, err := c.getOutputs()
 	if err != nil {
 		return
@@ -48,7 +49,7 @@ func (c *Config) runOutputs(outchan OutChan, logger *logrus.Logger) (err error) 
 			case event := <-outchan:
 				for _, output := range outputs {
 					go func(o TypeOutputConfig, e LogEvent) {
-						if err = o.Event(e); err != nil {
+						if err = o.Event(ctx, e); err != nil {
 							logger.Errorf("output failed: %v\n", err)
 						}
 					}(output, event)

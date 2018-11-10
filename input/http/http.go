@@ -1,6 +1,7 @@
 package httpinput
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"os"
@@ -62,18 +63,25 @@ func (ic *InputConfig) Start() {
 	ic.Invoke(ic.listen)
 }
 
-func (ic *InputConfig) listen(logger *logrus.Logger, inchan utils.InChan) {
+func (ic *InputConfig) listen(logger *logrus.Logger, ctx context.Context, inchan utils.InChan) {
 	var mux = http.NewServeMux()
 	mux.HandleFunc(ic.Urls, ic.Handler)
+
 	//http server.
-	go func(serverAddr string, m *http.ServeMux) {
-		if err := http.ListenAndServe(serverAddr, m); err != nil {
-			glog.Errorln(err)
+	server := &http.Server{Addr: ic.Addr, Handler: mux}
+	go func() {
+		if err := server.ListenAndServe(); err != nil {
+			logger.Errorln(err)
 		}
-	}(ic.Addr, mux)
+	}()
 
 	for {
 		select {
+		case <-ctx.Done():
+			server.Close()
+			close(ic.httpChan)
+			close(inchan)
+			return
 		case event := <-ic.httpChan:
 			inchan <- event
 		}

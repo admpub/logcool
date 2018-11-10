@@ -70,9 +70,13 @@ func (c *Config) Init() {
 	formatReflect(rv)
 }
 
-// In/Out chan.
-type InChan chan LogEvent
-type OutChan chan LogEvent
+type (
+	// InChan In chan.
+	InChan chan LogEvent
+
+	// OutChan Out chan.
+	OutChan chan LogEvent
+)
 
 // SetInjector Set injector value.
 func (c *CommonConfig) SetInjector(inj inject.Injector) {

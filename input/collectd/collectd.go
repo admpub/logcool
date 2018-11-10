@@ -25,7 +25,7 @@ const (
 	ModuleName = "collectd"
 )
 
-// Define collectdinput' config.
+// InputConfig Define collectdinput' config.
 type InputConfig struct {
 	utils.InputConfig
 

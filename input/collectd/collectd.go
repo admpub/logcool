@@ -142,7 +142,7 @@ func (t *InputConfig) monitor(logger *logrus.Logger, inchan utils.InChan) (err e
 		}
 	}()
 	for {
-		info := SystemInfo()
+		info := SystemInfo("./")
 		b, err := json.Marshal(info)
 		if err != nil {
 			fmt.Println(err)
@@ -163,12 +163,12 @@ func (t *InputConfig) monitor(logger *logrus.Logger, inchan utils.InChan) (err e
 	return
 }
 
-func SystemInfo() SysInfo {
+func SystemInfo(dir string) SysInfo {
 	return SysInfo{
 		Host:    HostStat(),
 		Cpu:     CpuStat(),
 		Mem:     MemStat(),
-		Disk:    DiskStat(),
+		Disk:    DiskStat(dir),
 		Net:     NetStat(),
 		Process: ProcessStat(),
 	}
@@ -197,8 +197,8 @@ func MemStat() MemoryInfo {
 	return memstat
 }
 
-func DiskStat() DiskInfo {
-	usage, _ := disk.Usage("./")
+func DiskStat(dir string) DiskInfo {
+	usage, _ := disk.Usage(dir)
 	partitions, _ := disk.Partitions(true)
 	iOCounters, _ := disk.IOCounters()
 

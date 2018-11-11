@@ -80,7 +80,6 @@ func (ic *InputConfig) listen(logger *logrus.Logger, ctx context.Context, inchan
 		case <-ctx.Done():
 			server.Close()
 			close(ic.httpChan)
-			close(inchan)
 			return
 		case event := <-ic.httpChan:
 			inchan <- event

@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/admpub/logcool/cmd"
 	_ "github.com/admpub/logcool/filter/grok"
@@ -32,6 +33,7 @@ var (
 	version = flag.Bool("version", false, "show version number.")
 	std     = flag.Bool("std", false, "run in stadin/stdout.")
 	help    = flag.Bool("help", false, "haha,I know you need me.")
+	timeout = flag.String("timeout", "", "timout")
 )
 
 func main() {
@@ -66,12 +68,32 @@ func main() {
 
 	cmd.Run(confs)
 
+	if len(*timeout) > 0 {
+		t, err := time.ParseDuration(*timeout)
+		if err == nil {
+			tick := time.NewTicker(t)
+			go func() {
+				for {
+					select {
+					case <-tick.C:
+						cancel()
+						return
+					case <-ctx.Done():
+						return
+					}
+				}
+			}()
+		} else {
+			fmt.Println(err)
+		}
+	}
 	// 捕获ctrl-c,平滑退出
 	chExit := make(chan os.Signal, 1)
 	signal.Notify(chExit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
 	select {
 	case <-chExit:
 		cancel()
-		fmt.Println("logcool EXIT...Bye.")
+		fmt.Println("")
+		fmt.Println("Logcool EXIT...Bye.")
 	}
 }

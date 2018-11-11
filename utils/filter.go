@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"context"
 	"errors"
 
 	"github.com/codegangsta/inject"
@@ -36,15 +37,18 @@ func (c *Config) RunFilters() (err error) {
 }
 
 // run Filetrs.
-func (c *Config) runFilters(inchan InChan, outchan OutChan) (err error) {
+func (c *Config) runFilters(ctx context.Context, inchan InChan, outchan OutChan) (err error) {
 	filters, err := c.getFilters()
 	if err != nil {
 		return
 	}
-
 	go func() {
 		for {
 			select {
+			case <-ctx.Done():
+				close(inchan)
+				close(outchan)
+				return
 			case event := <-inchan:
 				for _, filter := range filters {
 					event = filter.Event(event)

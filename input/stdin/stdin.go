@@ -67,12 +67,11 @@ func (t *InputConfig) echo(logger *logrus.Logger, ctx context.Context, inchan ut
 	for running {
 		select {
 		case <-ctx.Done():
-			close(inchan)
 			return
 		default:
 			// Sleep some Nanoseconds wait for event have been deal.
 			time.Sleep(300000 * time.Nanosecond)
-			fmt.Print("logcool#")
+			fmt.Print("Logcool#")
 			data, _, _ := reader.ReadLine()
 			command := string(data)
 			event := utils.LogEvent{

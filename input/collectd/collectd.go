@@ -146,7 +146,6 @@ func (t *InputConfig) monitor(logger *logrus.Logger, ctx context.Context, inchan
 	for {
 		select {
 		case <-ctx.Done():
-			close(inchan)
 			return
 		default:
 			info := SystemInfo("./")
@@ -156,6 +155,7 @@ func (t *InputConfig) monitor(logger *logrus.Logger, ctx context.Context, inchan
 				break
 			}
 			message := com.Bytes2str(b)
+			fmt.Println(`--------------------`)
 			event := utils.LogEvent{
 				Timestamp: time.Now(),
 				Message:   message,

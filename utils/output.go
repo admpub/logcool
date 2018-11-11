@@ -46,6 +46,8 @@ func (c *Config) runOutputs(ctx context.Context, outchan OutChan, logger *logrus
 	go func() {
 		for {
 			select {
+			case <-ctx.Done():
+				return
 			case event := <-outchan:
 				for _, output := range outputs {
 					go func(o TypeOutputConfig, e LogEvent) {

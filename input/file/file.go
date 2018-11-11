@@ -288,7 +288,6 @@ func (ic *InputConfig) loopRead(
 		select {
 		case <-ctx.Done():
 			close(readEventChan)
-			close(inchan)
 			return
 		default:
 			if line, size, err = readLine(reader, buffer); err != nil {
@@ -349,7 +348,6 @@ func (ic *InputConfig) loopWatch(ctx context.Context, readEventChan chan fsnotif
 
 		select {
 		case <-ctx.Done():
-			close(readEventChan)
 			return
 		default:
 			if event, err = waitWatchEvent(ctx, fpath, op); err != nil {
@@ -456,6 +454,7 @@ func waitWatchEvent(ctx context.Context, fpath string, op fsnotify.Op) (event fs
 			err = watcher.Close()
 			return
 		case event = <-watcher.Events:
+			//logger.Info(`[fsnotify] `, event.Name, `: `, event.Op.String(), "\n")
 			if event.Name == fpath {
 				if op > 0 {
 					if event.Op&op > 0 {

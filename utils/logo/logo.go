@@ -19,7 +19,7 @@ const logo = `
                          \_/__/                             
 
 `
-const version = `	Logcool version-0.2`
+const version = `	Logcool version 0.3`
 
 func info() {
 	hostname, err := os.Hostname()

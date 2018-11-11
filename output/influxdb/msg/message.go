@@ -36,3 +36,26 @@ func (m *Message) SetByMap(data echo.Store) *Message {
 	m.RequestTime = data.Get(`RequestTime`).Float64()
 	return m
 }
+
+func (m *Message) ToMap() echo.Store {
+	data := echo.Store{}
+	data.Set(`TimeLocal`, m.TimeLocal)
+	data.Set(`RemoteAddr`, m.RemoteAddr)
+	data.Set(`XRealIP`, m.XRealIP)
+	data.Set(`XForwardFor`, m.XForwardFor)
+	data.Set(`LocalAddr`, m.LocalAddr)
+	data.Set(`User`, m.User)
+	data.Set(`Version`, m.Version)
+	data.Set(`Referer`, m.Referer)
+	data.Set(`UserAgent`, m.UserAgent)
+	data.Set(`Path`, m.Path)
+	data.Set(`Method`, m.Method)
+	data.Set(`Scheme`, m.Scheme)
+	data.Set(`BrowerName`, m.BrowerName)
+	data.Set(`BrowerType`, m.BrowerType)
+	data.Set(`BytesSent`, m.BytesSent)
+	data.Set(`StatusCode`, m.StatusCode)
+	data.Set(`Path`, m.UpstreamTime)
+	data.Set(`RequestTime`, m.RequestTime)
+	return data
+}

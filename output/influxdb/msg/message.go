@@ -32,7 +32,7 @@ func (m *Message) SetByMap(data echo.Store) *Message {
 	m.BrowerType = data.Get(`BrowerType`).String()
 	m.BytesSent = data.Get(`BytesSent`).Uint64()
 	m.StatusCode = data.Get(`StatusCode`).Uint()
-	m.UpstreamTime = data.Get(`Path`).Float64()
+	m.UpstreamTime = data.Get(`UpstreamTime`).Float64()
 	m.RequestTime = data.Get(`RequestTime`).Float64()
 	return m
 }
@@ -55,7 +55,7 @@ func (m *Message) ToMap() echo.Store {
 	data.Set(`BrowerType`, m.BrowerType)
 	data.Set(`BytesSent`, m.BytesSent)
 	data.Set(`StatusCode`, m.StatusCode)
-	data.Set(`Path`, m.UpstreamTime)
+	data.Set(`UpstreamTime`, m.UpstreamTime)
 	data.Set(`RequestTime`, m.RequestTime)
 	return data
 }

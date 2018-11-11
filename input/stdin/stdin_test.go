@@ -1,4 +1,4 @@
-package stdininput
+package stdin
 
 import (
 	"fmt"

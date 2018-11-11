@@ -1,6 +1,4 @@
-// Input-plug: stdininput
-// The plug's function input the data from the standard-input.
-package stdininput
+package stdin
 
 import (
 	"bufio"

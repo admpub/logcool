@@ -7,14 +7,16 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/webx-top/echo"
 )
 
 // LogEvent struct that is also the Based struct.
 type LogEvent struct {
-	Timestamp time.Time              `json:"timestamp"`
-	Message   string                 `json:"message"`
-	Tags      []string               `json:"tags,omitempty"`
-	Extra     map[string]interface{} `json:"-"`
+	Timestamp time.Time  `json:"timestamp"`
+	Message   string     `json:"message"`
+	Tags      []string   `json:"tags,omitempty"`
+	Extra     echo.Store `json:"-"`
 }
 
 // Formate-Type

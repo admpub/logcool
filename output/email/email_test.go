@@ -1,4 +1,4 @@
-package outputemail
+package email
 
 import (
 	"fmt"

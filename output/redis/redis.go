@@ -1,6 +1,4 @@
-// Output-plug: outputredis
-// The plug's function take the event-data into redis.
-package outputredis
+package redis
 
 import (
 	"context"

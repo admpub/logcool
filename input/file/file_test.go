@@ -1,4 +1,4 @@
-package fileinput
+package file
 
 import (
 	"fmt"

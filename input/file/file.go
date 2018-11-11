@@ -1,7 +1,4 @@
-// Input-plug: fileinput
-// The plug's function is real-time monitoring of the specified file, once the data is
-//updated to record the data.
-package fileinput
+package file
 
 import (
 	"bufio"

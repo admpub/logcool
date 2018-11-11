@@ -1,6 +1,4 @@
-// Output-plug: outputexec
-// The plug's function take the event-data into the standard-output.
-package outputexec
+package lexec
 
 import (
 	"context"

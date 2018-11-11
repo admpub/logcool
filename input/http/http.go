@@ -1,4 +1,4 @@
-package httpinput
+package http
 
 import (
 	"context"

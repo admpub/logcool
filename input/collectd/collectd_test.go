@@ -1,4 +1,4 @@
-package collectdinput
+package collectd
 
 import (
 	"fmt"

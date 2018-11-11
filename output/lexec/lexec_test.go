@@ -1,4 +1,4 @@
-package outputexec
+package lexec
 
 import (
 	"fmt"

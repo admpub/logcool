@@ -1,6 +1,4 @@
-// Output-plug: outputemail
-// The plug's function take the event-data into the standard-output.
-package outputemail
+package email
 
 import (
 	"context"

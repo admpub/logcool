@@ -1,6 +1,4 @@
-// Input-plug: collectdinput
-// The plug's function is real-time monitoring of the system include cpu,memory,disk,host,net infomation.
-package collectdinput
+package collectd
 
 import (
 	"context"
@@ -155,12 +153,12 @@ func (t *InputConfig) monitor(logger *logrus.Logger, ctx context.Context, inchan
 				break
 			}
 			message := com.Bytes2str(b)
-			fmt.Println(`--------------------`)
 			event := utils.LogEvent{
 				Timestamp: time.Now(),
 				Message:   message,
 				Extra: map[string]interface{}{
 					"host": t.hostname,
+					"raw":  info,
 				},
 			}
 			inchan <- event

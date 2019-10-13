@@ -1,6 +1,7 @@
 package http
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -39,7 +40,7 @@ func Test_InitHandler(t *testing.T) {
 }
 
 func Test_Start(t *testing.T) {
-	conf, err := utils.LoadFromString(`{
+	conf, err := utils.LoadFromString(context.Background(), `{
 		"input": [{
 			"type": "http",
             "addr": "127.0.0.1:6789",

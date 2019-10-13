@@ -14,7 +14,7 @@ import (
 	"sync"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/fsnotify/fsnotify"
 
 	"github.com/admpub/logcool/utils"

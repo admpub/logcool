@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
@@ -24,18 +25,18 @@ func Test_GetType(t *testing.T) {
 }
 
 func Test_Invoke(t *testing.T) {
-	conf, _ := LoadFromString(Defaultconfig)
+	conf, _ := LoadFromString(context.Background(), Defaultconfig)
 	fmt.Println(conf)
 	// inj := inject.New()
 	// conf.Invoke(inj)
 }
 
 func Test_LoadFromFile(t *testing.T) {
-	LoadFromFile("../templates/stdin2stdout.json")
+	LoadFromFile(context.Background(), "../templates/stdin2stdout.json")
 }
 
 func Test_LoadFromString(t *testing.T) {
-	LoadFromString(`
+	LoadFromString(context.Background(), `
 	{
 		"input": [{
 			"type": "file",
@@ -48,7 +49,7 @@ func Test_LoadFromString(t *testing.T) {
 }
 
 func Test_LoadFromData(t *testing.T) {
-	LoadFromData([]byte(`
+	LoadFromData(context.Background(), []byte(`
 	{
 		"input": [{
 			"type": "file",

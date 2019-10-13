@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/garyburd/redigo/redis"
 
 	"github.com/admpub/logcool/utils"

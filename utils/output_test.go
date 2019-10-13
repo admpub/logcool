@@ -1,10 +1,12 @@
-package utils
+package utils_test
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
-	"github.com/admpub/logcool/output/stdout"
+	outputstdout "github.com/admpub/logcool/output/stdout"
+	. "github.com/admpub/logcool/utils"
 )
 
 func Test_RegistOutputHandler(t *testing.T) {
@@ -12,7 +14,7 @@ func Test_RegistOutputHandler(t *testing.T) {
 }
 
 func Test_RunOutputs(t *testing.T) {
-	config, err := LoadFromString(`
+	config, err := LoadFromString(context.Background(), `
 	{
 		"input": [{
 			"type": "file",

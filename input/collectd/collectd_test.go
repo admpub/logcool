@@ -1,6 +1,7 @@
 package collectd
 
 import (
+	"context"
 	"fmt"
 	"testing"
 	"time"
@@ -22,7 +23,7 @@ func Test_InitHandler(t *testing.T) {
 }
 
 func Test_Start(t *testing.T) {
-	conf, err := utils.LoadFromString(`{
+	conf, err := utils.LoadFromString(context.Background(), `{
 		"input": [{
 			"type": "collectd"
 		}]

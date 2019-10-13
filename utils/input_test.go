@@ -1,10 +1,12 @@
-package utils
+package utils_test
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
-	"github.com/admpub/logcool/input/stdin"
+	stdininput "github.com/admpub/logcool/input/stdin"
+	. "github.com/admpub/logcool/utils"
 )
 
 func Test_RegistInputHandler(t *testing.T) {
@@ -12,7 +14,7 @@ func Test_RegistInputHandler(t *testing.T) {
 }
 
 func Test_RunInputs(t *testing.T) {
-	config, err := LoadFromString(`
+	config, err := LoadFromString(context.Background(), `
 	{
 		"input": [{
 			"type": "file",

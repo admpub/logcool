@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"context"
 	"fmt"
 	// "reflect"
 	"testing"
@@ -15,7 +16,7 @@ func init() {
 }
 
 func Test_InitHandler(t *testing.T) {
-	conf, err := utils.LoadFromString(`{
+	conf, err := utils.LoadFromString(context.Background(), `{
 		"output": [{
 	           "type": "redis",
 	           "key": "logcool",
@@ -34,7 +35,7 @@ func Test_InitHandler(t *testing.T) {
 }
 
 func Test_Event(t *testing.T) {
-	conf, err := utils.LoadFromString(`{
+	conf, err := utils.LoadFromString(context.Background(), `{
 		"output": [{
 			"type": "redis",
 	           "key": "logcool",

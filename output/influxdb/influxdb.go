@@ -6,10 +6,11 @@ import (
 	"sync"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
-	"github.com/admpub/logcool/utils"
 	client "github.com/influxdata/influxdb/client/v2"
+	log "github.com/sirupsen/logrus"
 	"github.com/webx-top/echo"
+
+	"github.com/admpub/logcool/utils"
 )
 
 var (
@@ -62,7 +63,7 @@ func InitHandler(ctx context.Context, confraw *utils.ConfigRaw) (retconf utils.T
 	dsnSli := strings.Split(conf.DSN, "@")
 
 	// Create a new HTTPClient
-	conf.httpClient, err = client.NewHTTPClient(client.HTTPConfig{
+	conf.client, err = client.NewHTTPClient(client.HTTPConfig{
 		Addr:     dsnSli[0],
 		Username: dsnSli[1],
 		Password: dsnSli[2],
@@ -80,7 +81,7 @@ func InitHandler(ctx context.Context, confraw *utils.ConfigRaw) (retconf utils.T
 		conf.BulkSize = DefaultBulkSize
 	}
 	if conf.WriteInterval <= 0 {
-		conf.WriteInterval = DefaultWriteInterval
+		conf.WriteInterval = int64(DefaultWriteInterval)
 	}
 	conf.writeInterval = time.Duration(conf.WriteInterval) * time.Second
 	if len(conf.Tags) == 0 {
@@ -117,7 +118,7 @@ func (oc *OutputConfig) addPoint(message echo.Store) (err error) {
 
 	tags := map[string]string{}
 	for _, tag := range oc.Tags {
-		tags[tag] = fields.Get(tag).String()
+		tags[tag] = fields.String(tag)
 	}
 	fields.Delete(oc.Tags...)
 	table := event.Format(oc.Table)

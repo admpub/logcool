@@ -1,6 +1,7 @@
 package email
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 	"testing"
@@ -14,7 +15,7 @@ func init() {
 }
 
 func Test_InitHandler(t *testing.T) {
-	conf, err := utils.LoadFromString(`{
+	conf, err := utils.LoadFromString(context.Background(), `{
 		"output": [{
 	        "type": "email",
             "server":"smtp.163.com:25",
@@ -24,6 +25,9 @@ func Test_InitHandler(t *testing.T) {
             "cc":"YYYYYYYY@163.com"
 	       }]
 	}`)
+	if err != nil {
+		panic(err)
+	}
 	var confraw *utils.ConfigRaw
 	if err = utils.ReflectConfig(confraw, &conf); err != nil {
 		return
@@ -32,7 +36,7 @@ func Test_InitHandler(t *testing.T) {
 }
 
 func Test_Event(t *testing.T) {
-	conf, err := utils.LoadFromString(`{
+	conf, err := utils.LoadFromString(context.Background(), `{
 		"output": [{
 			"type": "email",
             "server":"smtp.163.com:25",
@@ -42,7 +46,9 @@ func Test_Event(t *testing.T) {
             "cc":"YYYYYYYY@163.com"
 		}]
 	}`)
-
+	if err != nil {
+		panic(err)
+	}
 	err = conf.RunOutputs()
 	if err != nil {
 		fmt.Println(err)

@@ -1,12 +1,13 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"testing"
 )
 
 func Test_Command(t *testing.T) {
-	Command(`
+	Command(context.Background(), `
 		{
     	"input": [
         	{
@@ -29,15 +30,15 @@ func Test_Command(t *testing.T) {
 }
 
 func Test_Custom(t *testing.T) {
-	Custom("../templates/stdin2stdout.json")
+	Custom(context.Background(), "../templates/stdin2stdout.json")
 }
 
 func Test_LoadTemplates(t *testing.T) {
-	LoadTemplates()
+	LoadTemplates(context.Background())
 }
 
 func Test_Run(t *testing.T) {
-	confs := Custom("../templates/stdin2stdout.json")
+	confs := Custom(context.Background(), "../templates/stdin2stdout.json")
 	err := Run(confs)
 	if err != nil {
 		fmt.Println(err)

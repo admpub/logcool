@@ -1,6 +1,7 @@
 package metrics
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 	"testing"
@@ -23,7 +24,7 @@ func Test_InitHandler(t *testing.T) {
 }
 
 func Test_Event(t *testing.T) {
-	conf, err := utils.LoadFromString(`{
+	conf, err := utils.LoadFromString(context.Background(), `{
 		"filter": [{
 			"type": "metrics",
             "tag":["timeout","refuse"],

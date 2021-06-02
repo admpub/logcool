@@ -106,13 +106,13 @@ func InitHandler(ctx context.Context, confraw *utils.ConfigRaw) (retconf utils.T
 
 // Event Input's event,and this is the main function of output.
 func (oc *OutputConfig) Event(ctx context.Context, event utils.LogEvent) (err error) {
-	err = oc.addPoint(event.Extra)
+	err = oc.addPoint(event)
 	return
 }
 
-func (oc *OutputConfig) addPoint(message echo.Store) (err error) {
+func (oc *OutputConfig) addPoint(event utils.LogEvent) (err error) {
 	fields := make(echo.Store)
-	for k, v := range message {
+	for k, v := range event.Extra {
 		fields[k] = v
 	}
 
@@ -123,13 +123,13 @@ func (oc *OutputConfig) addPoint(message echo.Store) (err error) {
 	fields.Delete(oc.Tags...)
 	table := event.Format(oc.Table)
 	var pt *client.Point
-	pt, err = client.NewPoint(table, tags, fields, v.TimeLocal)
+	pt, err = client.NewPoint(table, tags, fields, event.Timestamp)
 	if err != nil {
 		return
 	}
 	oc.batchPoints.AddPoint(pt)
 	// if the number of batch points are less than the batch size then we don't need to write them yet
-	if len(oc.batchPoints.Points()) < oc.BulkSize {
+	if uint64(len(oc.batchPoints.Points())) < oc.BulkSize {
 		return nil
 	}
 	return oc.writePoints()
@@ -137,16 +137,16 @@ func (oc *OutputConfig) addPoint(message echo.Store) (err error) {
 
 func (oc *OutputConfig) writePoints() (err error) {
 	// Write the batch
-	err = conf.client.Write(conf.batchPoints)
+	err = oc.client.Write(oc.batchPoints)
 	return
 }
 
 func (oc *OutputConfig) Close() {
-	if conf.client == nil {
+	if oc.client == nil {
 		return
 	}
 	// Close client resources
-	err := conf.client.Close()
+	err := oc.client.Close()
 	if err != nil {
 		log.Println(err)
 		return
@@ -162,6 +162,7 @@ func (oc *OutputConfig) flush(ctx context.Context) {
 		if err != nil {
 			log.Errorln(err)
 		}
+		return err
 	}
 	for {
 		select {
